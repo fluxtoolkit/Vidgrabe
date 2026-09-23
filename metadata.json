@@ -1,0 +1,6 @@
+{
+  "name": "VidGrab",
+  "description": "Video downloader for YouTube, Facebook, Instagram, and TikTok with batch downloads, built-in player, trimmer, and format converter.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

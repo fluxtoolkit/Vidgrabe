@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Play Card / Media Badge -->
+    <path
+        android:pathData="M34,28 h40 c5.5,0 10,4.5 10,10 v32 c0,5.5 -4.5,10 -10,10 h-40 c-5.5,0 -10,-4.5 -10,-10 v-32 c0,-5.5 4.5,-10 10,-10 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="45"
+                android:endX="84"
+                android:endY="80"
+                android:startX="24"
+                android:startY="28"
+                android:type="linear">
+                <item android:color="#6366F1" android:offset="0.0" />
+                <item android:color="#A855F7" android:offset="0.5" />
+                <item android:color="#EC4899" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Central Download Arrow & Play Accent -->
+    <!-- Downward Arrow stem -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M51,38 h6 v18 h-6 Z" />
+    <!-- Downward Arrow head -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44,54 L54,65 L64,54 Z" />
+    <!-- Bottom tray -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M43,69 h22 c1.1,0 2,0.9 2,2 c0,1.1 -0.9,2 -2,2 h-22 c-1.1,0 -2,-0.9 -2,-2 c0,-1.1 0.9,-2 2,-2 Z" />
+    <!-- Accent spark dots -->
+    <path
+        android:fillColor="#FDE047"
+        android:pathData="M72,36 a3,3 0 1,0 0.01,0 Z" />
+</vector>

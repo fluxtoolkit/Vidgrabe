@@ -1,0 +1,10 @@
+{
+  "name": "vidgrab",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node /app/applet/server.js",
+    "start": "node /app/applet/server.js",
+    "build": "echo 'Build successful'"
+  }
+}

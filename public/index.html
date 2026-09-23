@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VidGrab - Multi-Platform Video Downloader & Studio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    :root {
+      --bg: #0B0F19;
+      --surface: #111827;
+      --surface-variant: #1F2937;
+      --border: #2D3748;
+      --text: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --indigo: #6366F1;
+      --indigo-hover: #4F46E5;
+      --purple: #8B5CF6;
+      --pink: #EC4899;
+      --cyan: #06B6D4;
+      --amber: #F59E0B;
+      --green: #10B981;
+      --red: #EF4444;
+      --youtube: #FF0000;
+      --tiktok: #00F2FE;
+      --instagram: #E1306C;
+      --facebook: #1877F2;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+    .app-container {
+      max-width: 580px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 16px 90px 16px;
+    }
+    /* Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .header-logo-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--purple) 50%, var(--pink) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      color: white;
+    }
+    .header-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .studio-pill {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(99, 102, 241, 0.2);
+      color: #A5B4FC;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+    .header-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .badge-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--surface-variant);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .badge-btn:hover {
+      background: #374151;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .hero-banner {
+      background: linear-gradient(135deg, #1E1B4B 0%, #31104B 50%, #4C0519 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .hero-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(236, 72, 153, 0.25);
+      color: #F472B6;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .hero-heading {
+      font-size: 17px;
+      font-weight: 800;
+      color: white;
+    }
+    .hero-desc {
+      font-size: 12px;
+      color: #D1D5DB;
+      margin-top: 2px;
+    }
+
+    /* Platform chips */
+    .chips-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+    .chips-row::-webkit-scrollbar {
+      display: none;
+    }
+    .chip {
+      padding: 7px 14px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .chip.active {
+      background: var(--indigo);
+      color: white;
+      border-color: var(--indigo);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Input box */
+    .input-box {
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin: 8px 0;
+    }
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .text-input {
+      width: 100%;
+      background: #0D1322;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 38px 12px 38px;
+      font-size: 13px;
+      color: white;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .text-input:focus {
+      border-color: var(--indigo);
+    }
+    .clear-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+    }
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .sec-btn {
+      padding: 7px 12px;
+      border-radius: 10px;
+      background: var(--surface-variant);
+      border: 1px solid var(--border);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sec-btn:hover {
+      background: #374151;
+    }
+    .primary-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--purple) 100%);
+      border: none;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+      transition: opacity 0.2s;
+    }
+    .primary-btn:hover {
+      opacity: 0.95;
+    }
+
+    /* Inspected card */
+    .inspected-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .platform-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+    }
+    .thumb-container {
+      width: 100%;
+      height: 180px;
+      border-radius: 12px;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .play-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    .video-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .quality-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--surface-variant);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quality-option.selected {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--indigo);
+    }
+
+    /* Samples list */
+    .sample-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #0D1322;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sample-item:hover {
+      background: #151D30;
+    }
+    .sample-thumb {
+      width: 56px;
+      height: 44px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #000;
+      flex-shrink: 0;
+    }
+    .sample-info {
+      flex: 1;
+      margin-left: 10px;
+      overflow: hidden;
+    }
+    .sample-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sample-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    /* Progress bar */
+    .prog-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-variant);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--indigo) 0%, var(--purple) 100%);
+      transition: width 0.3s;
+    }
+    .prog-fill.completed {
+      background: var(--green);
+    }
+    .prog-fill.paused {
+      background: var(--amber);
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 580px;
+      margin: 0 auto;
+      background: rgba(11, 15, 25, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 12px;
+      z-index: 40;
+    }
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 0;
+      font-size: 11px;
+      font-weight: 500;
+      gap: 2px;
+      transition: color 0.2s;
+    }
+    .nav-btn.active {
+      color: var(--indigo);
+      font-weight: 700;
+    }
+    .nav-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Player modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .modal-overlay.hidden {
+      display: none;
+    }
+    .modal-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    }
+    .circle-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .modal-video-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      position: relative;
+    }
+    .modal-video {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+    }
+    .modal-controls {
+      padding: 20px 24px;
+      background: linear-gradient(to top, black 0%, rgba(0,0,0,0.8) 70%, transparent 100%);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #1F2937;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 60;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo-group">
+        <div class="logo-badge">
+          <!-- Down arrow SVG -->
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M19 12l-7 7-7-7"/>
+          </svg>
+        </div>
+        <div>
+          <div class="header-title">
+            VidGrab <span class="studio-pill">Studio</span>
+          </div>
+          <div class="header-subtitle">YouTube, TikTok, Reels & FB Downloader</div>
+        </div>
+      </div>
+      <button onclick="switchTab('batch')" class="badge-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="#818CF8" stroke-width="2" fill="none">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+        <span id="queueBadge">0 active</span>
+      </button>
+    </header>
+
+    <!-- ================= TAB 1: GRAB VIDEO ================= -->
+    <main id="tab-grab">
+      <!-- Promo Banner -->
+      <div class="hero-banner">
+        <div class="hero-tag">Offline 1080p Saver</div>
+        <div class="hero-heading">Save Any Clip in Studio Quality</div>
+        <div class="hero-desc">Supports batch queues, lossless trimmer, & MP3 audio extractor.</div>
+      </div>
+
+      <!-- Platforms filter -->
+      <div>
+        <p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">Supported Platforms</p>
+        <div class="chips-row">
+          <button onclick="filterPlatform('All')" class="chip active" data-platform="All">All Platforms</button>
+          <button onclick="filterPlatform('YouTube')" class="chip" data-platform="YouTube">
+            <span class="dot" style="background: var(--youtube);"></span> YouTube
+          </button>
+          <button onclick="filterPlatform('TikTok')" class="chip" data-platform="TikTok">
+            <span class="dot" style="background: var(--tiktok);"></span> TikTok
+          </button>
+          <button onclick="filterPlatform('Instagram')" class="chip" data-platform="Instagram">
+            <span class="dot" style="background: var(--instagram);"></span> Instagram
+          </button>
+          <button onclick="filterPlatform('Facebook')" class="chip" data-platform="Facebook">
+            <span class="dot" style="background: var(--facebook);"></span> Facebook
+          </button>
+        </div>
+      </div>
+
+      <!-- Link Input Card -->
+      <div class="card">
+        <label style="font-size: 13px; font-weight: 700; color: white;">Paste Video Link</label>
+        <div class="input-box">
+          <div class="input-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </div>
+          <input id="urlInput" type="text" placeholder="https://youtube.com/..., tiktok.com/..." class="text-input">
+          <button id="clearBtn" onclick="clearInput()" class="clear-btn hidden">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="action-row">
+          <button onclick="pasteClipboard()" class="sec-btn" style="color: var(--pink);">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+              <rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+            </svg>
+            Paste Clipboard
+          </button>
+          <button onclick="switchTab('batch')" class="sec-btn" style="color: var(--cyan);">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/>
+            </svg>
+            Batch Links
+          </button>
+        </div>
+      </div>
+
+      <!-- Inspected Video Card -->
+      <div id="inspectedCard" class="card" style="border-color: rgba(99, 102, 241, 0.4);">
+        <div class="inspected-header">
+          <span id="inspectBadge" class="platform-badge" style="background: var(--youtube);">YouTube</span>
+          <span id="inspectDuration" style="font-size: 11px; font-weight: 700; color: #D1D5DB; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px;">00:30</span>
+        </div>
+
+        <div class="thumb-container" onclick="previewCurrentVideo()">
+          <img id="inspectThumb" class="thumb-img" src="" alt="Thumbnail">
+          <div class="play-overlay">
+            <div class="play-circle">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="white">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div id="inspectTitle" class="video-title">Video Title</div>
+
+        <p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">Select Download Quality</p>
+        <div id="qualityList">
+          <!-- Populated by JS -->
+        </div>
+
+        <button onclick="downloadCurrent()" class="primary-btn" style="margin-top: 10px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none">
+            <path d="M12 5v14M19 12l-7 7-7-7"/>
+          </svg>
+          <span id="downloadBtnText">Download 1080p MP4</span>
+        </button>
+      </div>
+
+      <!-- Quick 1-Tap Sample Clips -->
+      <div class="card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: white;">Trending Sample Clips (1-Tap Test)</h3>
+          <span style="font-size: 11px; color: var(--text-muted);">Instant Demo</span>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Tap any clip to instantly load, download, trim, and convert:</p>
+        <div id="sampleList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= TAB 2: BATCH QUEUE ================= -->
+    <main id="tab-batch" class="hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <div>
+          <h2 style="font-size: 20px; font-weight: 800; color: white;">Batch Downloader</h2>
+          <p style="font-size: 12px; color: var(--text-muted);">Queue multiple video clips at once</p>
+        </div>
+        <button onclick="loadSampleBatch()" class="sec-btn" style="color: var(--cyan); border-color: rgba(6, 182, 212, 0.4);">
+          + Load Sample Batch
+        </button>
+      </div>
+
+      <div class="card">
+        <label style="font-size: 12px; font-weight: 700; color: white; margin-bottom: 6px; display: block;">Paste Multiple Links (One per line)</label>
+        <textarea id="batchText" rows="4" style="width: 100%; background: #0D1322; border: 1px solid var(--border); border-radius: 12px; padding: 10px; color: white; font-size: 12px; font-family: monospace; outline: none;" placeholder="https://youtube.com/...&#10;https://tiktok.com/...&#10;https://instagram.com/..."></textarea>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 12px; color: var(--text-muted);">Target:</span>
+            <select id="batchQuality" style="background: #0D1322; border: 1px solid var(--border); color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; outline: none;">
+              <option value="1080p">1080p Full HD</option>
+              <option value="720p">720p HD</option>
+              <option value="mp3">MP3 Audio Only</option>
+            </select>
+          </div>
+          <button onclick="startBatchDownload()" class="primary-btn" style="width: auto; padding: 8px 16px; font-size: 12px;">
+            Start Batch Download
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 12px; color: var(--text-muted);">
+          <strong id="batchActiveCount" style="color: var(--cyan);">0</strong> Active •
+          <strong id="batchDoneCount" style="color: var(--green);">0</strong> Completed
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button onclick="pauseAllDownloads()" class="sec-btn" style="padding: 4px 8px; font-size: 11px; color: var(--amber);">
+            Pause All
+          </button>
+          <button onclick="clearCompletedQueue()" class="sec-btn" style="padding: 4px 8px; font-size: 11px;">
+            Clear Done
+          </button>
+        </div>
+      </div>
+
+      <div id="batchQueueList">
+        <!-- Populated by JS -->
+      </div>
+    </main>
+
+    <!-- ================= TAB 3: OFFLINE LIBRARY ================= -->
+    <main id="tab-library" class="hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <h2 style="font-size: 20px; font-weight: 800; color: white;">Offline Library</h2>
+          <p id="libraryStorageInfo" style="font-size: 12px; color: var(--text-muted);">0 saved clips • Offline ready</p>
+        </div>
+        <button onclick="switchTab('grab')" class="sec-btn" style="color: var(--indigo); font-weight: 700;">
+          + Grab Clip
+        </button>
+      </div>
+
+      <!-- Search & Filters -->
+      <div style="margin-bottom: 12px;">
+        <input id="libSearch" type="text" oninput="renderLibrary()" placeholder="Search saved videos & audios..." class="text-input" style="padding: 9px 14px; margin-bottom: 8px;">
+        <div style="display: flex; gap: 6px;">
+          <button onclick="setLibFilter('all')" class="chip active" id="filter-all">All</button>
+          <button onclick="setLibFilter('video')" class="chip" id="filter-video">Videos</button>
+          <button onclick="setLibFilter('audio')" class="chip" id="filter-audio">Audio</button>
+          <button onclick="setLibFilter('trimmed')" class="chip" id="filter-trimmed">Trimmed</button>
+        </div>
+      </div>
+
+      <div id="libraryList">
+        <!-- Populated by JS -->
+      </div>
+    </main>
+
+    <!-- ================= TAB 4: STUDIO TOOLS ================= -->
+    <main id="tab-studio" class="hidden">
+      <div style="margin-bottom: 14px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: white;">VidGrab Studio Tools</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">Lossless video trimming & format converter</p>
+      </div>
+
+      <div style="display: flex; background: #0D1322; padding: 4px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 14px;">
+        <button onclick="setStudioTool('trimmer')" id="toolTabTrimmer" class="primary-btn" style="flex: 1; padding: 8px; font-size: 12px; border-radius: 8px;">
+          Video Trimmer
+        </button>
+        <button onclick="setStudioTool('converter')" id="toolTabConverter" class="sec-btn" style="flex: 1; padding: 8px; font-size: 12px; border-radius: 8px; justify-content: center; background: none; border: none;">
+          Format Converter
+        </button>
+      </div>
+
+      <!-- Trimmer Box -->
+      <div id="studioTrimmerSection" class="card">
+        <label style="font-size: 12px; font-weight: 700; color: white; display: block; margin-bottom: 6px;">1. Select Video from Library</label>
+        <select id="trimmerMediaSelect" onchange="onTrimmerSelected()" style="width: 100%; background: #0D1322; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 10px; font-size: 12px; outline: none; margin-bottom: 14px;">
+          <option value="">-- Choose video --</option>
+        </select>
+
+        <div id="trimmerControls" class="hidden">
+          <div style="height: 180px; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 12px;">
+            <video id="trimmerPreviewVideo" style="width: 100%; height: 100%; object-fit: contain;" controls playsinline></video>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); background: #0D1322; border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 14px;">
+            <div>
+              <p style="font-size: 10px; color: var(--text-muted);">Start</p>
+              <strong id="trimStartVal" style="color: var(--cyan); font-family: monospace;">00:00</strong>
+            </div>
+            <div>
+              <p style="font-size: 10px; color: var(--text-muted);">Duration</p>
+              <strong id="trimDurationVal" style="color: var(--pink); font-family: monospace;">00:10</strong>
+            </div>
+            <div>
+              <p style="font-size: 10px; color: var(--text-muted);">End</p>
+              <strong id="trimEndVal" style="color: var(--purple); font-family: monospace;">00:10</strong>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">
+              <span>Start Scrubber</span>
+              <span id="startSecLabel">0s</span>
+            </div>
+            <input id="trimStartSlider" type="range" min="0" max="30" value="0" oninput="onTrimSliderChange()" style="width: 100%; accent-color: var(--cyan);">
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">
+              <span>End Scrubber</span>
+              <span id="endSecLabel">10s</span>
+            </div>
+            <input id="trimEndSlider" type="range" min="1" max="30" value="10" oninput="onTrimSliderChange()" style="width: 100%; accent-color: var(--purple);">
+          </div>
+
+          <button onclick="executeTrim()" id="btnTrimSave" class="primary-btn">
+            Trim & Save to Library
+          </button>
+        </div>
+      </div>
+
+      <!-- Converter Box -->
+      <div id="studioConverterSection" class="card hidden">
+        <label style="font-size: 12px; font-weight: 700; color: white; display: block; margin-bottom: 6px;">1. Select Source Media</label>
+        <select id="converterMediaSelect" style="width: 100%; background: #0D1322; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 10px; font-size: 12px; outline: none; margin-bottom: 14px;">
+          <option value="">-- Choose media --</option>
+        </select>
+
+        <label style="font-size: 12px; font-weight: 700; color: white; display: block; margin-bottom: 8px;">2. Target Format</label>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
+          <button onclick="setConvertFmt('mp3')" id="fmt-mp3" class="sec-btn" style="flex-direction: column; padding: 12px; border-color: var(--indigo); background: rgba(99,102,241,0.2);">
+            <strong style="color: white; font-size: 13px;">MP3 Audio</strong>
+            <span style="font-size: 10px; color: var(--text-muted);">320 kbps</span>
+          </button>
+          <button onclick="setConvertFmt('m4a')" id="fmt-m4a" class="sec-btn" style="flex-direction: column; padding: 12px;">
+            <strong style="color: white; font-size: 13px;">M4A AAC</strong>
+            <span style="font-size: 10px; color: var(--text-muted);">Apple / Android</span>
+          </button>
+          <button onclick="setConvertFmt('mp4')" id="fmt-mp4" class="sec-btn" style="flex-direction: column; padding: 12px;">
+            <strong style="color: white; font-size: 13px;">MP4 Video</strong>
+            <span style="font-size: 10px; color: var(--text-muted);">Container</span>
+          </button>
+        </div>
+
+        <button onclick="executeConvert()" id="btnConvertSave" class="primary-btn">
+          Convert & Extract Audio
+        </button>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button onclick="switchTab('grab')" class="nav-btn active" id="nav-grab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M12 5v14M19 12l-7 7-7-7"/>
+      </svg>
+      <span>Grab</span>
+    </button>
+    <button onclick="switchTab('batch')" class="nav-btn" id="nav-batch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+      </svg>
+      <span>Batch</span>
+    </button>
+    <button onclick="switchTab('library')" class="nav-btn" id="nav-library">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      <span>Library</span>
+    </button>
+    <button onclick="switchTab('studio')" class="nav-btn" id="nav-studio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+        <line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>
+      </svg>
+      <span>Studio</span>
+    </button>
+  </nav>
+
+  <!-- Fullscreen Player Modal -->
+  <div id="playerModal" class="modal-overlay hidden">
+    <div class="modal-header">
+      <button onclick="closePlayer()" class="circle-icon-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div style="text-align: center; flex: 1; padding: 0 12px;">
+        <div id="modalTitle" style="font-size: 13px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Title</div>
+        <div id="modalSub" style="font-size: 11px; color: var(--text-muted);">1080p MP4</div>
+      </div>
+      <button onclick="shareCurrentMedia()" class="circle-icon-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-video-box">
+      <video id="playerVideo" class="modal-video" playsinline></video>
+      <div id="audioVisualizer" class="hidden" style="text-align: center;">
+        <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--indigo), var(--pink)); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+          <svg viewBox="0 0 24 24" width="44" height="44" fill="white">
+            <path d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+          </svg>
+        </div>
+        <p id="audioTrackTitle" style="font-size: 15px; font-weight: 700; color: white;">Audio Track</p>
+      </div>
+    </div>
+
+    <div class="modal-controls">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span id="playerCurTime" style="font-size: 11px; font-family: monospace; color: #D1D5DB;">00:00</span>
+        <input id="playerScrubber" type="range" min="0" max="100" value="0" style="flex: 1; accent-color: var(--indigo); cursor: pointer;">
+        <span id="playerTotTime" style="font-size: 11px; font-family: monospace; color: var(--text-muted);">00:30</span>
+      </div>
+
+      <div style="display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 14px;">
+        <button onclick="seekRel(-10)" class="circle-icon-btn" style="background: none;">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="white" stroke-width="2" fill="none">
+            <path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
+        </button>
+        <button onclick="togglePlay()" id="modalPlayBtn" style="width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, var(--indigo), var(--pink)); border: none; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.5);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+        </button>
+        <button onclick="seekRel(10)" class="circle-icon-btn" style="background: none;">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="white" stroke-width="2" fill="none">
+            <path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+        </button>
+      </div>
+
+      <div style="display: flex; justify-content: center; align-items: center; gap: 6px;">
+        <span style="font-size: 10px; color: var(--text-muted); margin-right: 4px;">Speed:</span>
+        <button onclick="setSpeed(0.5, this)" class="sec-btn speed-btn" style="padding: 2px 6px; font-size: 10px;">0.5x</button>
+        <button onclick="setSpeed(1.0, this)" class="sec-btn speed-btn" style="padding: 2px 6px; font-size: 10px; background: var(--indigo); font-weight: bold;">1.0x</button>
+        <button onclick="setSpeed(1.25, this)" class="sec-btn speed-btn" style="padding: 2px 6px; font-size: 10px;">1.25x</button>
+        <button onclick="setSpeed(1.5, this)" class="sec-btn speed-btn" style="padding: 2px 6px; font-size: 10px;">1.5x</button>
+        <button onclick="setSpeed(2.0, this)" class="sec-btn speed-btn" style="padding: 2px 6px; font-size: 10px;">2.0x</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Notice message</div>
+
+  <script>
+    // Embedded sample dataset ensures immediate zero-network paint!
+    const PRESET_SAMPLES = [
+      {
+        title: "Wildlife in 4K - Majestic Mountain Fauna",
+        platform: "YouTube",
+        url: "https://youtube.com/watch?v=nature_4k_wildlife_01",
+        duration: "00:30",
+        durationSeconds: 30,
+        thumbnail: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=600&auto=format&fit=crop&q=80",
+        stream: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+      },
+      {
+        title: "Viral Dance Trend & Beat - HD Reel",
+        platform: "TikTok",
+        url: "https://tiktok.com/@trendsetter/video/71928374829102",
+        duration: "00:15",
+        durationSeconds: 15,
+        thumbnail: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop&q=80",
+        stream: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+      },
+      {
+        title: "Amalfi Coast Golden Hour Sunset Drone",
+        platform: "Instagram",
+        url: "https://instagram.com/reel/C5xKlm98PQw",
+        duration: "00:20",
+        durationSeconds: 20,
+        thumbnail: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&auto=format&fit=crop&q=80",
+        stream: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+      },
+      {
+        title: "Artisan Japanese Woodworking Masterclass",
+        platform: "Facebook",
+        url: "https://facebook.com/watch/?v=9823471029384",
+        duration: "00:25",
+        durationSeconds: 25,
+        thumbnail: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&auto=format&fit=crop&q=80",
+        stream: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4"
+      }
+    ];
+
+    let currentInspected = null;
+    let selectedQualityIdx = 0;
+    let downloadQueue = [];
+    let savedLibrary = [];
+    let currentPlaying = null;
+    let activeStudioTool = 'trimmer';
+    let targetConvertFormat = 'mp3';
+    let libraryFilter = 'all';
+
+    // Safe storage load
+    try {
+      const saved = localStorage.getItem('vidgrab_clips');
+      if (saved) savedLibrary = JSON.parse(saved);
+    } catch (_) {}
+
+    // Initialize UI on load
+    window.addEventListener('load', () => {
+      renderSampleList();
+      renderQueue();
+      renderLibrary();
+      updateStudioSelects();
+
+      // Inspect first preset by default
+      if (PRESET_SAMPLES.length > 0) {
+        inspectUrl(PRESET_SAMPLES[0].url);
+      }
+
+      // Input listener
+      const input = document.getElementById('urlInput');
+      input.addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('clearBtn').classList.toggle('hidden', !val);
+        inspectUrl(val);
+      });
+
+      // Video scrubber listener
+      const scrubber = document.getElementById('playerScrubber');
+      scrubber.addEventListener('input', (e) => {
+        const vid = document.getElementById('playerVideo');
+        if (vid.duration) {
+          vid.currentTime = (e.target.value / 100) * vid.duration;
+        }
+      });
+    });
+
+    function renderSampleList() {
+      const container = document.getElementById('sampleList');
+      container.innerHTML = PRESET_SAMPLES.map(s => {
+        const color = s.platform === 'YouTube' ? 'var(--youtube)' :
+                      s.platform === 'TikTok' ? 'var(--tiktok)' :
+                      s.platform === 'Instagram' ? 'var(--instagram)' : 'var(--facebook)';
+        return `
+          <div onclick="selectSample('${s.url}')" class="sample-item">
+            <img src="${s.thumbnail}" class="sample-thumb" alt="Thumbnail">
+            <div class="sample-info">
+              <span class="platform-badge" style="background: ${color}; font-size: 9px; padding: 1px 5px;">${s.platform}</span>
+              <div class="sample-title">${s.title}</div>
+              <div class="sample-meta">${s.duration} • 1080p Stream</div>
+            </div>
+            <div style="color: var(--indigo); padding: 4px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+              </svg>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectSample(url) {
+      document.getElementById('urlInput').value = url;
+      document.getElementById('clearBtn').classList.remove('hidden');
+      inspectUrl(url);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearInput() {
+      document.getElementById('urlInput').value = '';
+      document.getElementById('clearBtn').classList.add('hidden');
+    }
+
+    async function pasteClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById('urlInput').value = text;
+          document.getElementById('clearBtn').classList.remove('hidden');
+          inspectUrl(text);
+          showToast("Pasted from clipboard");
+        }
+      } catch (_) {
+        showToast("Paste URL manually into input field");
+      }
+    }
+
+    function filterPlatform(p) {
+      document.querySelectorAll('.chip').forEach(c => {
+        if (c.dataset.platform === p) c.classList.add('active');
+        else if (c.dataset.platform) c.classList.remove('active');
+      });
+      const match = PRESET_SAMPLES.find(s => s.platform === p);
+      if (match) selectSample(match.url);
+    }
+
+    function inspectUrl(rawUrl) {
+      const url = (rawUrl || '').trim();
+      if (!url) return;
+
+      const lower = url.toLowerCase();
+      let platform = "Direct Video";
+      let color = "var(--indigo)";
+      if (lower.includes("youtube.com") || lower.includes("youtu.be")) { platform = "YouTube"; color = "var(--youtube)"; }
+      else if (lower.includes("tiktok.com")) { platform = "TikTok"; color = "var(--tiktok)"; }
+      else if (lower.includes("instagram.com") || lower.includes("instagr.am")) { platform = "Instagram"; color = "var(--instagram)"; }
+      else if (lower.includes("facebook.com") || lower.includes("fb.watch")) { platform = "Facebook"; color = "var(--facebook)"; }
+
+      const matched = PRESET_SAMPLES.find(s => s.url.toLowerCase() === lower);
+      const title = matched ? matched.title : `${platform} Clip [${url.slice(-8)}]`;
+      const stream = matched ? matched.stream : PRESET_SAMPLES[0].stream;
+      const thumb = matched ? matched.thumbnail : PRESET_SAMPLES[0].thumbnail;
+
+      currentInspected = {
+        title,
+        url,
+        platform,
+        color,
+        thumbnail: thumb,
+        streamUrl: stream,
+        duration: "00:30",
+        durationSec: 30,
+        qualities: [
+          { label: "1080p Full HD", resolution: "1920x1080", format: "mp4", size: "28.5 MB", isAudio: false },
+          { label: "720p HD", resolution: "1280x720", format: "mp4", size: "14.2 MB", isAudio: false },
+          { label: "480p SD", resolution: "854x480", format: "mp4", size: "7.8 MB", isAudio: false },
+          { label: "MP3 Audio (320 kbps)", resolution: "Audio Only", format: "mp3", size: "2.4 MB", isAudio: true },
+          { label: "M4A AAC Audio", resolution: "Audio Only", format: "m4a", size: "1.8 MB", isAudio: true }
+        ]
+      };
+
+      renderInspected();
+    }
+
+    function renderInspected() {
+      if (!currentInspected) return;
+      const card = document.getElementById('inspectedCard');
+      card.classList.remove('hidden');
+
+      document.getElementById('inspectTitle').textContent = currentInspected.title;
+      document.getElementById('inspectThumb').src = currentInspected.thumbnail;
+      document.getElementById('inspectDuration').textContent = currentInspected.duration;
+
+      const badge = document.getElementById('inspectBadge');
+      badge.textContent = currentInspected.platform;
+      badge.style.background = currentInspected.color;
+
+      selectedQualityIdx = 0;
+      renderQualities();
+    }
+
+    function renderQualities() {
+      const container = document.getElementById('qualityList');
+      container.innerHTML = currentInspected.qualities.map((q, idx) => {
+        const isSel = idx === selectedQualityIdx;
+        return `
+          <div onclick="selectQuality(${idx})" class="quality-option ${isSel ? 'selected' : ''}">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="color: ${q.isAudio ? 'var(--pink)' : 'var(--cyan)'}; font-size: 13px;">${q.isAudio ? '♫' : '▶'}</span>
+              <div>
+                <strong style="font-size: 12px; color: white; display: block;">${q.label}</strong>
+                <span style="font-size: 10px; color: var(--text-muted);">${q.resolution} • ${q.format.toUpperCase()}</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; color: #D1D5DB; font-family: monospace;">${q.size}</span>
+              <span style="color: ${isSel ? 'var(--indigo)' : 'var(--border)'}; font-size: 14px;">●</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const sel = currentInspected.qualities[selectedQualityIdx];
+      document.getElementById('downloadBtnText').textContent = `Download ${sel.format.toUpperCase()} (${sel.label.split(' ')[0]})`;
+    }
+
+    function selectQuality(idx) {
+      selectedQualityIdx = idx;
+      renderQualities();
+    }
+
+    function previewCurrentVideo() {
+      if (!currentInspected) return;
+      openPlayer({
+        title: currentInspected.title,
+        streamUrl: currentInspected.streamUrl,
+        format: 'mp4',
+        platform: currentInspected.platform
+      });
+    }
+
+    function downloadCurrent() {
+      if (!currentInspected) return;
+      const q = currentInspected.qualities[selectedQualityIdx];
+      enqueue({
+        title: currentInspected.title,
+        url: currentInspected.url,
+        streamUrl: currentInspected.streamUrl,
+        platform: currentInspected.platform,
+        quality: q.label,
+        format: q.format,
+        thumbnail: currentInspected.thumbnail,
+        duration: currentInspected.duration,
+        totalSize: q.size
+      });
+      showToast('Started downloading: ' + currentInspected.title);
+      switchTab('batch');
+    }
+
+    function enqueue(item) {
+      const id = 'dl_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+      const queueItem = {
+        id,
+        ...item,
+        progress: 0,
+        status: 'downloading',
+        speed: '3.2 MB/s'
+      };
+      downloadQueue.unshift(queueItem);
+      renderQueue();
+      simulateDownload(id);
+    }
+
+    function simulateDownload(id) {
+      const interval = setInterval(() => {
+        const item = downloadQueue.find(q => q.id === id);
+        if (!item || item.status === 'paused' || item.status === 'cancelled') {
+          clearInterval(interval);
+          return;
+        }
+
+        item.progress += Math.floor(Math.random() * 15) + 10;
+        if (item.progress >= 100) {
+          item.progress = 100;
+          item.status = 'completed';
+          clearInterval(interval);
+
+          // Save to library
+          addToLibrary({
+            id: 'lib_' + Date.now(),
+            title: item.title,
+            streamUrl: item.streamUrl,
+            platform: item.platform,
+            format: item.format,
+            quality: item.quality,
+            thumbnail: item.thumbnail,
+            duration: item.duration,
+            fileSize: item.totalSize,
+            isTrimmed: false
+          });
+
+          showToast('Completed: ' + item.title);
+        }
+        renderQueue();
+      }, 400);
+    }
+
+    function renderQueue() {
+      const container = document.getElementById('batchQueueList');
+      const active = downloadQueue.filter(q => q.status === 'downloading').length;
+      const done = downloadQueue.filter(q => q.status === 'completed').length;
+
+      document.getElementById('batchActiveCount').textContent = active;
+      document.getElementById('batchDoneCount').textContent = done;
+      document.getElementById('queueBadge').textContent = `${active} active`;
+
+      if (downloadQueue.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 32px 16px;">
+            <p style="font-size: 14px; font-weight: 700; color: white; margin-bottom: 4px;">Queue is Empty</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Paste multiple links or load sample batch to test simultaneous downloads.</p>
+            <button onclick="loadSampleBatch()" class="primary-btn" style="width: auto; margin: 0 auto; padding: 8px 16px; font-size: 12px;">
+              Load Sample Batch
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = downloadQueue.map(item => {
+        const isDone = item.status === 'completed';
+        const isPaused = item.status === 'paused';
+        return `
+          <div class="card" style="padding: 12px; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; padding-right: 8px;">
+                <span class="platform-badge" style="background: ${item.platform === 'YouTube' ? 'var(--youtube)' : 'var(--instagram)'}; font-size: 9px;">${item.platform}</span>
+                <strong style="font-size: 12px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</strong>
+              </div>
+              <span style="font-size: 10px; font-weight: 700; color: ${isDone ? 'var(--green)' : (isPaused ? 'var(--amber)' : 'var(--cyan)')};">${item.status.toUpperCase()}</span>
+            </div>
+
+            <div class="prog-track">
+              <div class="prog-fill ${isDone ? 'completed' : (isPaused ? 'paused' : '')}" style="width: ${item.progress}%;"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted);">
+              <span>${item.progress}% • ${item.format.toUpperCase()} (${item.quality})</span>
+              <div style="display: flex; gap: 8px;">
+                ${!isDone ? `
+                  <button onclick="toggleQueuePause('${item.id}')" style="background: none; border: none; color: ${isPaused ? 'var(--green)' : 'var(--amber)'}; font-size: 11px; cursor: pointer;">
+                    ${isPaused ? 'Resume' : 'Pause'}
+                  </button>
+                ` : `
+                  <button onclick="switchTab('library')" style="background: none; border: none; color: var(--indigo); font-weight: bold; cursor: pointer;">
+                    View in Library
+                  </button>
+                `}
+                <button onclick="removeQueue('${item.id}')" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">✕</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleQueuePause(id) {
+      const item = downloadQueue.find(q => q.id === id);
+      if (!item) return;
+      if (item.status === 'downloading') {
+        item.status = 'paused';
+      } else if (item.status === 'paused') {
+        item.status = 'downloading';
+        simulateDownload(id);
+      }
+      renderQueue();
+    }
+
+    function removeQueue(id) {
+      downloadQueue = downloadQueue.filter(q => q.id !== id);
+      renderQueue();
+    }
+
+    function pauseAllDownloads() {
+      downloadQueue.forEach(q => { if (q.status === 'downloading') q.status = 'paused'; });
+      renderQueue();
+    }
+
+    function clearCompletedQueue() {
+      downloadQueue = downloadQueue.filter(q => q.status !== 'completed');
+      renderQueue();
+    }
+
+    function loadSampleBatch() {
+      document.getElementById('batchText').value = PRESET_SAMPLES.map(s => s.url).join('\n');
+    }
+
+    function startBatchDownload() {
+      const text = document.getElementById('batchText').value;
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length === 0) {
+        showToast('Paste at least one link');
+        return;
+      }
+      const q = document.getElementById('batchQuality').value;
+
+      lines.forEach(url => {
+        const found = PRESET_SAMPLES.find(s => s.url === url) || {
+          title: `Batch Clip [${url.slice(-8)}]`,
+          url,
+          platform: 'YouTube',
+          thumbnail: PRESET_SAMPLES[0].thumbnail,
+          duration: '00:30',
+          stream: PRESET_SAMPLES[0].stream
+        };
+        enqueue({
+          title: found.title,
+          url: found.url,
+          streamUrl: found.stream,
+          platform: found.platform,
+          quality: q === 'mp3' ? 'MP3 Audio' : (q === '1080p' ? '1080p Full HD' : '720p HD'),
+          format: q === 'mp3' ? 'mp3' : 'mp4',
+          thumbnail: found.thumbnail,
+          duration: found.duration,
+          totalSize: q === 'mp3' ? '2.4 MB' : '28.5 MB'
+        });
+      });
+
+      document.getElementById('batchText').value = '';
+      showToast(`Enqueued ${lines.length} items to batch!`);
+    }
+
+    // Library
+    function addToLibrary(clip) {
+      savedLibrary.unshift(clip);
+      saveLibrary();
+      renderLibrary();
+      updateStudioSelects();
+    }
+
+    function saveLibrary() {
+      try {
+        localStorage.setItem('vidgrab_clips', JSON.stringify(savedLibrary));
+      } catch (_) {}
+    }
+
+    function setLibFilter(f) {
+      libraryFilter = f;
+      ['all', 'video', 'audio', 'trimmed'].forEach(name => {
+        document.getElementById(`filter-${name}`).classList.toggle('active', name === f);
+      });
+      renderLibrary();
+    }
+
+    function renderLibrary() {
+      const container = document.getElementById('libraryList');
+      const query = (document.getElementById('libSearch')?.value || '').toLowerCase();
+
+      const filtered = savedLibrary.filter(item => {
+        const matchQ = item.title.toLowerCase().includes(query);
+        const isAudio = item.format === 'mp3' || item.format === 'm4a';
+        if (libraryFilter === 'video') return matchQ && !isAudio;
+        if (libraryFilter === 'audio') return matchQ && isAudio;
+        if (libraryFilter === 'trimmed') return matchQ && item.isTrimmed;
+        return matchQ;
+      });
+
+      document.getElementById('libraryStorageInfo').textContent = `${savedLibrary.length} saved clips • Offline ready`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 32px 16px;">
+            <p style="font-size: 14px; font-weight: 700; color: white; margin-bottom: 4px;">No clips in library</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Grab your first clip from YouTube, TikTok, or Reels.</p>
+            <button onclick="switchTab('grab')" class="primary-btn" style="width: auto; margin: 0 auto; padding: 8px 16px; font-size: 12px;">
+              Grab Clip Now
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const isAudio = item.format === 'mp3' || item.format === 'm4a';
+        return `
+          <div class="card" style="padding: 12px; margin-bottom: 8px;">
+            <div style="display: flex; gap: 10px;">
+              <div onclick="playMediaById('${item.id}')" style="width: 72px; height: 56px; border-radius: 8px; overflow: hidden; background: #000; position: relative; cursor: pointer; flex-shrink: 0;">
+                ${!isAudio ? `
+                  <img src="${item.thumbnail}" style="width: 100%; height: 100%; object-fit: cover;">
+                ` : `
+                  <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--indigo), var(--pink)); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">♫</div>
+                `}
+                <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.8); font-size: 8px; padding: 1px 3px; border-radius: 2px; color: white;">${item.duration}</span>
+              </div>
+
+              <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
+                  <span class="platform-badge" style="background: rgba(99,102,241,0.3); color: #A5B4FC; font-size: 9px; padding: 1px 5px;">${item.platform}</span>
+                  ${item.isTrimmed ? '<span class="platform-badge" style="background: rgba(6,182,212,0.3); color: #67E8F9; font-size: 9px; padding: 1px 5px;">Trimmed</span>' : ''}
+                </div>
+                <div onclick="playMediaById('${item.id}')" style="font-size: 12px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;">${item.title}</div>
+                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">${item.format.toUpperCase()} • ${item.fileSize}</div>
+
+                <div style="display: flex; gap: 10px; margin-top: 8px; font-size: 11px;">
+                  <button onclick="openTrimmerFor('${item.id}')" style="background: none; border: none; color: var(--cyan); cursor: pointer;">Trim</button>
+                  <button onclick="openConverterFor('${item.id}')" style="background: none; border: none; color: var(--purple); cursor: pointer;">Convert</button>
+                  <button onclick="downloadMediaFile('${item.id}')" style="background: none; border: none; color: var(--pink); cursor: pointer;">Save</button>
+                  <button onclick="deleteMediaById('${item.id}')" style="background: none; border: none; color: var(--text-muted); margin-left: auto; cursor: pointer;">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function playMediaById(id) {
+      const item = savedLibrary.find(i => i.id === id);
+      if (!item) return;
+      openPlayer(item);
+    }
+
+    function openPlayer(media) {
+      currentPlaying = media;
+      document.getElementById('modalTitle').textContent = media.title;
+      document.getElementById('modalSub').textContent = `${media.platform} • ${(media.format || 'mp4').toUpperCase()}`;
+
+      const video = document.getElementById('playerVideo');
+      const visualizer = document.getElementById('audioVisualizer');
+      const isAudio = (media.format === 'mp3' || media.format === 'm4a');
+
+      if (isAudio) {
+        video.classList.add('hidden');
+        visualizer.classList.remove('hidden');
+        document.getElementById('audioTrackTitle').textContent = media.title;
+        video.src = media.streamUrl;
+      } else {
+        visualizer.classList.add('hidden');
+        video.classList.remove('hidden');
+        video.src = media.streamUrl;
+      }
+
+      video.play().catch(() => {});
+      document.getElementById('playerModal').classList.remove('hidden');
+
+      video.ontimeupdate = () => {
+        const cur = video.currentTime || 0;
+        const dur = video.duration || 30;
+        document.getElementById('playerCurTime').textContent = formatSeconds(cur);
+        document.getElementById('playerTotTime').textContent = formatSeconds(dur);
+        document.getElementById('playerScrubber').value = (cur / dur) * 100;
+      };
+    }
+
+    function closePlayer() {
+      const vid = document.getElementById('playerVideo');
+      vid.pause();
+      vid.src = '';
+      document.getElementById('playerModal').classList.add('hidden');
+    }
+
+    function togglePlay() {
+      const vid = document.getElementById('playerVideo');
+      const btn = document.getElementById('modalPlayBtn');
+      if (vid.paused) {
+        vid.play();
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
+      } else {
+        vid.pause();
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+      }
+    }
+
+    function seekRel(sec) {
+      const vid = document.getElementById('playerVideo');
+      vid.currentTime = Math.max(0, Math.min(vid.duration || 30, vid.currentTime + sec));
+    }
+
+    function setSpeed(s, btn) {
+      document.getElementById('playerVideo').playbackRate = s;
+      document.querySelectorAll('.speed-btn').forEach(b => {
+        b.style.background = 'var(--surface-variant)';
+        b.style.fontWeight = 'normal';
+      });
+      btn.style.background = 'var(--indigo)';
+      btn.style.fontWeight = 'bold';
+    }
+
+    function shareCurrentMedia() {
+      if (!currentPlaying) return;
+      if (navigator.share) {
+        navigator.share({ title: currentPlaying.title, url: currentPlaying.streamUrl });
+      } else {
+        downloadMediaFile(currentPlaying.id);
+      }
+    }
+
+    function downloadMediaFile(id) {
+      const item = savedLibrary.find(i => i.id === id);
+      if (!item) return;
+      const a = document.createElement('a');
+      a.href = item.streamUrl;
+      a.download = `${item.title}.${item.format || 'mp4'}`;
+      a.target = '_blank';
+      a.click();
+      showToast('Downloading ' + item.title);
+    }
+
+    function deleteMediaById(id) {
+      if (!confirm('Remove clip from offline library?')) return;
+      savedLibrary = savedLibrary.filter(i => i.id !== id);
+      saveLibrary();
+      renderLibrary();
+      updateStudioSelects();
+      showToast('Removed from library');
+    }
+
+    // Studio Tools
+    function updateStudioSelects() {
+      const trimSelect = document.getElementById('trimmerMediaSelect');
+      const convSelect = document.getElementById('converterMediaSelect');
+
+      const vids = savedLibrary.filter(i => i.format !== 'mp3' && i.format !== 'm4a').map(i => `
+        <option value="${i.id}">${i.title} (${i.duration})</option>
+      `).join('');
+      trimSelect.innerHTML = '<option value="">-- Choose video from library --</option>' + vids;
+
+      const all = savedLibrary.map(i => `
+        <option value="${i.id}">${i.title} (${i.format.toUpperCase()})</option>
+      `).join('');
+      convSelect.innerHTML = '<option value="">-- Choose media from library --</option>' + all;
+    }
+
+    function setStudioTool(tool) {
+      activeStudioTool = tool;
+      const isTrim = tool === 'trimmer';
+      document.getElementById('studioTrimmerSection').classList.toggle('hidden', !isTrim);
+      document.getElementById('studioConverterSection').classList.toggle('hidden', isTrim);
+
+      const tabTrim = document.getElementById('toolTabTrimmer');
+      const tabConv = document.getElementById('toolTabConverter');
+
+      if (isTrim) {
+        tabTrim.className = 'primary-btn';
+        tabConv.className = 'sec-btn';
+        tabConv.style.background = 'none';
+        tabConv.style.border = 'none';
+      } else {
+        tabConv.className = 'primary-btn';
+        tabTrim.className = 'sec-btn';
+        tabTrim.style.background = 'none';
+        tabTrim.style.border = 'none';
+      }
+    }
+
+    function openTrimmerFor(id) {
+      switchTab('studio');
+      setStudioTool('trimmer');
+      document.getElementById('trimmerMediaSelect').value = id;
+      onTrimmerSelected();
+    }
+
+    function openConverterFor(id) {
+      switchTab('studio');
+      setStudioTool('converter');
+      document.getElementById('converterMediaSelect').value = id;
+    }
+
+    function onTrimmerSelected() {
+      const id = document.getElementById('trimmerMediaSelect').value;
+      const item = savedLibrary.find(i => i.id === id);
+      const controls = document.getElementById('trimmerControls');
+      if (!item) {
+        controls.classList.add('hidden');
+        return;
+      }
+      controls.classList.remove('hidden');
+
+      const vid = document.getElementById('trimmerPreviewVideo');
+      vid.src = item.streamUrl;
+
+      document.getElementById('trimStartSlider').value = 0;
+      document.getElementById('trimEndSlider').value = 10;
+      onTrimSliderChange();
+    }
+
+    function onTrimSliderChange() {
+      let start = parseInt(document.getElementById('trimStartSlider').value);
+      let end = parseInt(document.getElementById('trimEndSlider').value);
+      if (end <= start) {
+        end = start + 1;
+        document.getElementById('trimEndSlider').value = end;
+      }
+      document.getElementById('startSecLabel').textContent = start + 's';
+      document.getElementById('endSecLabel').textContent = end + 's';
+
+      document.getElementById('trimStartVal').textContent = formatSeconds(start);
+      document.getElementById('trimEndVal').textContent = formatSeconds(end);
+      document.getElementById('trimDurationVal').textContent = formatSeconds(end - start);
+
+      const vid = document.getElementById('trimmerPreviewVideo');
+      vid.currentTime = start;
+    }
+
+    function executeTrim() {
+      const id = document.getElementById('trimmerMediaSelect').value;
+      const item = savedLibrary.find(i => i.id === id);
+      if (!item) return;
+
+      const start = document.getElementById('trimStartSlider').value;
+      const end = document.getElementById('trimEndSlider').value;
+      const btn = document.getElementById('btnTrimSave');
+
+      btn.disabled = true;
+      btn.textContent = 'Processing lossless trim...';
+
+      setTimeout(() => {
+        addToLibrary({
+          id: 'lib_' + Date.now(),
+          title: `${item.title} (Trimmed ${start}s-${end}s)`,
+          streamUrl: item.streamUrl,
+          platform: item.platform,
+          format: item.format,
+          quality: item.quality,
+          thumbnail: item.thumbnail,
+          duration: formatSeconds(end - start),
+          fileSize: `${Math.round((end-start) * 0.9)} MB`,
+          isTrimmed: true
+        });
+        btn.disabled = false;
+        btn.textContent = 'Trim & Save to Library';
+        showToast('Trimmed clip added to Library!');
+        switchTab('library');
+      }, 1000);
+    }
+
+    function setConvertFmt(fmt) {
+      targetConvertFormat = fmt;
+      ['mp3', 'm4a', 'mp4'].forEach(f => {
+        const btn = document.getElementById(`fmt-${f}`);
+        if (f === fmt) {
+          btn.style.borderColor = 'var(--indigo)';
+          btn.style.background = 'rgba(99,102,241,0.2)';
+        } else {
+          btn.style.borderColor = 'var(--border)';
+          btn.style.background = 'var(--surface-variant)';
+        }
+      });
+      document.getElementById('btnConvertSave').textContent = `Convert & Extract to ${fmt.toUpperCase()}`;
+    }
+
+    function executeConvert() {
+      const id = document.getElementById('converterMediaSelect').value;
+      const item = savedLibrary.find(i => i.id === id);
+      if (!item) {
+        showToast('Please choose a media clip to convert');
+        return;
+      }
+
+      const btn = document.getElementById('btnConvertSave');
+      btn.disabled = true;
+      btn.textContent = 'Extracting audio & converting...';
+
+      setTimeout(() => {
+        addToLibrary({
+          id: 'lib_' + Date.now(),
+          title: `${item.title} (${targetConvertFormat.toUpperCase()} Audio)`,
+          streamUrl: item.streamUrl,
+          platform: item.platform,
+          format: targetConvertFormat,
+          quality: 'Audio Only',
+          thumbnail: item.thumbnail,
+          duration: item.duration,
+          fileSize: '2.4 MB',
+          isTrimmed: false
+        });
+        btn.disabled = false;
+        btn.textContent = `Convert & Extract to ${targetConvertFormat.toUpperCase()}`;
+        showToast('Converted audio added to Library!');
+        switchTab('library');
+      }, 900);
+    }
+
+    // Tab Navigation
+    function switchTab(tab) {
+      ['grab', 'batch', 'library', 'studio'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`nav-${t}`).classList.toggle('active', t === tab);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function formatSeconds(sec) {
+      const s = Math.floor(sec || 0);
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => {
+        t.classList.remove('show');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
